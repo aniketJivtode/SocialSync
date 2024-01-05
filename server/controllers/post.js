@@ -17,14 +17,12 @@ export const createPost  = async (req,res) => {
             userPicturePath:  user.picturePath,
             picturePath,
             likes: {},
-            comments: {}
+            comments: []
         })
 
         await newPost.save();
-
-        const posts = await Post.find();
-
-        res.send(201).json(posts);
+        const posts = await Post.find().sort({ createdAt: -1 });
+        res.status(201).json(posts);
         
     } catch (error) {
         res.status(409).json({msg: error.message})
@@ -33,9 +31,9 @@ export const createPost  = async (req,res) => {
 
 export const getFeedPosts  = async (req,res) => {
     try {
-        const posts = await Post.find();
-        res.send(200).json(posts);
-        
+        const posts = await Post.find().sort({ createdAt: -1 });
+        console.log(posts)
+        res.status(200).json(posts);
     } catch (error) {
         res.status(409).json({msg: error.message})
     }
@@ -44,9 +42,8 @@ export const getFeedPosts  = async (req,res) => {
 export const getUserPosts  = async (req,res) => {
     try {
         const { userId } = req.params;
-        const posts = await Post.find({ userId });
-        res.send(200).json(posts);
-        
+        const posts = await Post.find({ userId }).sort({ createdAt: -1 });;
+        res.status(200).json(posts);
     } catch (error) {
         res.status(409).json({msg: error.message})
     }
@@ -58,8 +55,8 @@ export const likePost  = async (req,res) => {
         const { id } = req.params;
         const { userId } = req.body;
         const post = await Post.findById(id);
-        const isLiked = await Post.likes.get(userId);
-    
+        const isLiked = await post.likes.get(userId);
+        console.log(userId);
         if(isLiked){
             post.likes.delete(userId);
         }else{

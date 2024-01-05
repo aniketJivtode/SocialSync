@@ -21,9 +21,9 @@ import {
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
-  
+    const backendUrl = process.env.REACT_APP_ENV === "prod" ? process.env.REACT_APP_BACKEND_URL : process.env.REACT_APP_LOCALHOST_BACKEND_URL;
     const getUser = async () => {
-      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+      const response = await fetch(`${backendUrl}/users/${userId}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });

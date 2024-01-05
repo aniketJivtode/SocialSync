@@ -1,10 +1,9 @@
+
 import User from "../models/User.js";
 
 export const getUser = async (req,res) => {
-    console.log("here")
     try {
         const { id } = req.params;
-        console.log(req.params)
         const user = await User.findById(id); 
         res.status(200).json(user);
     } catch (error) {
@@ -17,17 +16,22 @@ export const getUserFriends = async (req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
-    
-        const friends = Promise.all(
-            user.friends.map(user=> User.findById(user.id) )
+       
+        const friends = await Promise.all(
+            user.friends.map(user=> User.findById(id) )
         )
-    
-        const formattedFriends = friends.map(({ _id,firstName, lastName, occupation, location, picturePath })=>{
-            return { 
-                _id,firstName, lastName, occupation, location, picturePath
-            }
-        })
-        res.status(200).json(formattedFriends)
+        if(friends.length === 0){
+            console.log(friends);
+            const formattedFriends = friends.map(({ _id,firstName, lastName, occupation, location, picturePath })=>{
+                return { 
+                    _id,firstName, lastName, occupation, location, picturePath
+                }
+            })
+            res.status(200).json(formattedFriends)
+        }else{
+            res.status(201);
+        }
+       
     } catch (error) {
         res.status(404).json({msg: error.message})
     }
@@ -39,9 +43,9 @@ export const addRemoveFriend = async (req,res) => {
         const { id, friendID } = req.params;
 
         const user = await User.findById(id);
-        const friend = await User.findById(id);
+        const friend = await User.findById(friendID);
 
-        if(user.friends.includes(friend)){
+        if(user.friends.includes(friendID)){
             user.friends = user.friends.filter( id => id !== friendID );
             friend.friends = friend.friends.filter((id)=> id !== id);
         }else{
@@ -52,10 +56,10 @@ export const addRemoveFriend = async (req,res) => {
         await user.save();
         await friend.save();
 
-        const friends = Promise.all(
-            user.friends.map(user=> User.findById(user.id) )
+        const friends = await Promise.all(
+            user.friends.map(id=> User.findById(id) )
         )
-    
+
         const formattedFriends = friends.map(({ _id,firstName, lastName, occupation, location, picturePath })=>{
             return { 
                 _id,firstName, lastName, occupation, location, picturePath

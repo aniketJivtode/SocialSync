@@ -13,10 +13,9 @@ const LoginPage = () => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="primary">
-          Sociopedia
+          SocialSync
         </Typography>
       </Box>
-
       <Box
         width={isNonMobileScreens ? "50%" : "93%"}
         p="2rem"
