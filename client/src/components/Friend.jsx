@@ -24,7 +24,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const patchFriend = async () => {
     const backendUrl = process.env.REACT_APP_ENV === "prod" ? process.env.REACT_APP_BACKEND_URL : process.env.REACT_APP_LOCALHOST_BACKEND_URL;
     const response = await fetch(
-      `${backendUrl}/${_id}/${friendId}`,
+      `${backendUrl}/users/${_id}/${friendId}`,
       {
         method: "PATCH",
         headers: {
